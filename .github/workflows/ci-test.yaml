@@ -31,7 +31,7 @@ jobs:
       - name: Image Display
         run: docker images
       - name: Docker Hub Login
-        uses: docker/login-activation@v1
+        uses: docker/login-action@v1
         with:
           username: jiwooooo0
           password: ${{secrets.DOCKERHUB_TOKEN}}
