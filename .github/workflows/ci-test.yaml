@@ -37,3 +37,33 @@ jobs:
           password: ${{secrets.DOCKERHUB_TOKEN}}
       - name: Image Push
         run: docker push jiwooooo0/flaskweb:latest
+  
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          DOCKER_USERNAME: jiwooooo0
+          DOCKER_REPO: flaskweb
+          DOCKER_TOKEN: ${{ secrets.DOCKERHUB_TOKEN}}
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          envs: DOCKER_USERNAME, DOCKER_REPO, DOCKER_TOKEN
+          debug: true
+          timeout: 30s
+          command_timeout: 5m
+          request_pty: true
+          use_insecure_cipher: true
+          script: |
+            echo "Successfully Connected"
+            echo "Starting deployment for: $DOCKER_USERNAME/$DOCKER_REPO"
+            echo "${DOCKER_TOKEN}" | sudo docker login -u "${DOCKER_USERNAME}" --password-stdin
+            sudo docker pull $DOCKER_USERNAME/$DOCKER_REPO:latest
+            sudo docker stop my-app-container 2>/dev/null || true
+            sudo docker rm my-app-container 2>/dev/null || true
+            sudo docker run -d --name my-app-container -p 5000:5000 --restart always $DOCKER_USERNAME/$DOCKER_REPO:latest
+            sudo docker image prune -f
