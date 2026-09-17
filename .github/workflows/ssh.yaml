@@ -1,0 +1,18 @@
+name: learn-github-actions
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+jobs:
+  python:
+    runs-on: ubuntu=latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Set Up python
+        uses: actions/setup
+        with:
+          python-version: "3.13" #파이썬 설치-Plugin 설치
