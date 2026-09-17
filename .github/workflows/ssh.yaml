@@ -7,7 +7,7 @@ on:
       - main
 jobs:
   python:
-    runs-on: ubuntu=latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
