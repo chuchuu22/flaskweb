@@ -12,7 +12,11 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
       - name: Set Up python
-        uses: actions/setup
+        uses: actions/setup-python@v5
         with:
           python-version: "3.13" #파이썬 설치-Plugin 설치
+
+      - name: Display Python Version
+        run: python --version #Shell 명령어 수행: jenkins 에서는 sh "명령어"
